@@ -60,6 +60,14 @@
             transition: transform 0.2s, opacity 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        /* ロック中のボタンスタイル */
+        .btn.disabled {
+            background-color: #cccccc !important;
+            color: #888888 !important;
+            pointer-events: none; /* クリックできなくする */
+            box-shadow: none;
+            transform: none !important;
+        }
         .btn:hover {
             opacity: 0.9;
             transform: scale(1.02);
@@ -74,6 +82,17 @@
             margin-top: 8px;
             line-height: 1.4;
         }
+        /* タイマーの文字 */
+        #timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff4757;
+            background: #ffeaa7;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: block;
+        }
         footer {
             margin-top: 30px;
             font-size: 12px;
@@ -87,21 +106,23 @@
     <h1>ヨシチャット</h1>
     <p class="description">みんなでリアルタイムにおしゃべりできるチャットアプリ！<br>自分の端末に合わせてえらんでね。</p>
 
+    <div id="timer">公開までお待ちください...</div>
+
     <div class="download-section">
         <div class="platform-title">🤖 Androidの人（アプリ版）</div>
-        <a href="app-debug.apk" class="btn btn-android" download="Yoshichat.apk">アプリをダウンロード</a>
-        <p class="note">※ダウンロードしたAPKファイルを開いてインストールしてね。「提供元不明のアプリ」の警告が出たら許可をしてください。</p>
+        <a href="app-debug.apk" id="btn-android" class="btn btn-android disabled" download="Yoshichat.apk">アプリをダウンロード</a>
+        <p class="note">※ダウンロードしたAPKファイルを開いてインストールしてね。</p>
     </div>
 
     <div class="download-section">
         <div class="platform-title">🍏 iPhone / iPadの人</div>
-        <a href="index.html" class="btn btn-iphone">ブラウザで開く</a>
-        <p class="note">※開いたあと、ブラウザのメニューから「ホーム画面に追加」をすると、本物のアプリみたいに使えるようになります！</p>
+        <a href="index.html" id="btn-iphone" class="btn btn-iphone disabled">ブラウザで開く</a>
+        <p class="note">※開いたあと、「ホーム画面に追加」をするとアプリみたいに使えます！</p>
     </div>
 
     <div class="download-section">
         <div class="platform-title">💻 パソコン（Windows / Mac）の人</div>
-        <a href="index.html" class="btn btn-pc">大画面でチャットを開く</a>
+        <a href="index.html" id="btn-pc" class="btn btn-pc disabled">大画面でチャットを開く</a>
         <p class="note">※キーボードを使ってタイピングでおしゃべりしたいときにおすすめ！</p>
     </div>
 
@@ -109,6 +130,40 @@
         <p>&copy; 2026 ヨシチャット 開発チーム</p>
     </footer>
 </div>
+
+<script>
+    // ★公開日時を設定（2026年5月30日 00:00:00）
+    const releaseDate = new Date("2026-05-30T00:00:00").getTime();
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const distance = releaseDate - now;
+
+        if (distance <= 0) {
+            // 5月30日になったらロックを解除
+            document.getElementById("timer").style.display = "none"; // タイマーを消す
+            document.getElementById("btn-android").classList.remove("disabled");
+            document.getElementById("btn-iphone").classList.remove("disabled");
+            document.getElementById("btn-pc").classList.remove("disabled");
+            clearInterval(timerInterval); // タイマー停止
+            return;
+        }
+
+        // 残り時間を計算
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // タイマーの文字を更新
+        document.getElementById("timer").innerText = 
+            `🚀 公開まであと ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
+    }
+
+    // 1秒ごとにタイマーを動かす
+    const timerInterval = setInterval(updateTimer, 1000);
+    updateTimer(); // 初回起動
+</script>
 
 </body>
 </html>
