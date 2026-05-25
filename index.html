@@ -3,47 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ヨシチャット公式サイト</title>
+    <title>ヨシチャット 公式サイト</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; text-align: center; }
-        .hero { background: #52aad8; color: white; padding: 60px 20px; }
-        .hero h1 { font-size: 40px; margin: 0; }
-        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; text-align: left; }
-        .btn { display: inline-block; padding: 15px 30px; background: #52aad8; color: white; text-decoration: none; border-radius: 25px; font-weight: bold; margin: 20px 0; }
-        section { margin-bottom: 50px; border-bottom: 1px solid #eee; padding-bottom: 30px; }
-        h2 { color: #52aad8; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            width: 90%;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            margin: 20px 0;
+        }
+        h1 {
+            color: #52aad8;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .download-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        .platform-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .btn {
+            display: inline-block;
+            width: 80%;
+            padding: 12px 0;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.2s, opacity 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        .btn-android { background-color: #a4c639; }
+        .btn-iphone { background-color: #000000; }
+        .btn-pc { background-color: #0078d4; }
+        
+        .note {
+            font-size: 11px;
+            color: #888;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
 
-    <div class="hero">
-        <h1>ヨシチャット</h1>
-        <p>シンプルで、すぐつながるチャットアプリ。</p>
-        <a href="[チャットアプリのURL]" class="btn">チャットルームに入る</a>
+<div class="container">
+    <h1>ヨシチャット</h1>
+    <p class="description">みんなでリアルタイムにおしゃべりできるチャットアプリ！<br>自分の端末に合わせてえらんでね。</p>
+
+    <div class="download-section">
+        <div class="platform-title">🤖 Androidの人（アプリ版）</div>
+        <a href="app-debug.apk" class="btn btn-android" download="Yoshichat.apk">アプリをダウンロード</a>
+        <p class="note">※ダウンロードしたAPKファイルを開いてインストールしてね。「提供元不明のアプリ」の警告が出たら許可をしてください。</p>
     </div>
 
-    <div class="container">
-        <section>
-            <h2>ヨシチャットとは？</h2>
-            <p>面倒な登録は不要です。名前とメールアドレスを入力するだけで、すぐにルームを作って仲間と会話ができます。</p>
-        </section>
-
-        <section>
-            <h2>使い方はこちら</h2>
-            <p><strong>1. はじめ方</strong><br>
-            ログイン画面でメールアドレスと名前を入力し、「チャットに入る」を押すだけです。</p>
-            <p><strong>2. おしゃべりのしかた</strong><br>
-            下の入力欄にメッセージを書いて送信ボタンを押してください。ルーム内の全員にメッセージが届きます。</p>
-            <p><strong>3. 秘密の対談</strong><br>
-            誰かのアイコンをタップして緑のプラスボタンを押すと、その人と2人だけの対談ルームに移動できます。</p>
-        </section>
-
-        <section>
-            <h2>公式サポート</h2>
-            <p>お問い合わせやご意見は、以下のボタンからメールでお送りください。</p>
-            <a href="mailto:yoopy2014@gmail.com?subject=ヨシチャットについて" class="btn" style="background:#f39c12;">サポートへメールを送る</a>
-        </section>
+    <div class="download-section">
+        <div class="platform-title">🍏 iPhone / iPadの人</div>
+        <a href="chat.html" class="btn btn-iphone">ブラウザで開く</a>
+        <p class="note">※開いたあと、ブラウザのメニューから「ホーム画面に追加」をすると、本物のアプリみたいに使えるようになります！</p>
     </div>
+
+    <div class="download-section">
+        <div class="platform-title">💻 パソコン（Windows / Mac）の人</div>
+        <a href="chat.html" class="btn btn-pc">大画面でチャットを開く</a>
+        <p class="note">※キーボードを使ってタイピングでおしゃべりしたいときにおすすめ！</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ヨシチャット 開発チーム</p>
+    </footer>
+</div>
 
 </body>
 </html>
