@@ -60,11 +60,10 @@
             transition: transform 0.2s, opacity 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        /* ロック中のボタンスタイル */
         .btn.disabled {
             background-color: #cccccc !important;
             color: #888888 !important;
-            pointer-events: none; /* クリックできなくする */
+            pointer-events: none;
             box-shadow: none;
             transform: none !important;
         }
@@ -82,7 +81,6 @@
             margin-top: 8px;
             line-height: 1.4;
         }
-        /* タイマーの文字 */
         #timer {
             font-size: 18px;
             font-weight: bold;
@@ -92,6 +90,30 @@
             border-radius: 5px;
             margin-bottom: 20px;
             display: block;
+        }
+        /* 開発者向けの隠しエリアスタイル */
+        .early-access-box {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f1f2f6;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        .early-access-box input {
+            padding: 8px;
+            width: 70%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .early-access-box button {
+            padding: 8px 12px;
+            background-color: #52aad8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
         }
         footer {
             margin-top: 30px;
@@ -126,6 +148,12 @@
         <p class="note">※キーボードを使ってタイピングでおしゃべりしたいときにおすすめ！</p>
     </div>
 
+    <div class="early-access-box">
+        <p style="margin: 0 0 8px 0; font-weight: bold; color: #666;">🛠️ 共同開発者・先行ダウンロード</p>
+        <input type="email" id="friend-email" placeholder="メールアドレスを入力">
+        <button onclick="checkEarlyAccess()">解除</button>
+    </div>
+
     <footer>
         <p>&copy; 2026 ヨシチャット 開発チーム</p>
     </footer>
@@ -140,29 +168,42 @@
         const distance = releaseDate - now;
 
         if (distance <= 0) {
-            // 5月30日になったらロックを解除
-            document.getElementById("timer").style.display = "none"; // タイマーを消す
-            document.getElementById("btn-android").classList.remove("disabled");
-            document.getElementById("btn-iphone").classList.remove("disabled");
-            document.getElementById("btn-pc").classList.remove("disabled");
-            clearInterval(timerInterval); // タイマー停止
+            unlockButtons();
+            clearInterval(timerInterval);
             return;
         }
 
-        // 残り時間を計算
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // タイマーの文字を更新
         document.getElementById("timer").innerText = 
             `🚀 公開まであと ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
     }
 
-    // 1秒ごとにタイマーを動かす
+    // ★友達のメアドで早期ロック解除する機能
+    function checkEarlyAccess() {
+        const inputVal = document.getElementById("friend-email").value.trim();
+        // 大文字小文字のミスを防ぐために小文字に統一して判定するよ
+        if (inputVal.toLowerCase() === "yuishisan0614@gmail.com") {
+            alert("絵師の友達を確認しました！先行ダウンロードロックを解除します！");
+            unlockButtons();
+        } else {
+            alert("登録されていないメールアドレスです。");
+        }
+    }
+
+    // ボタンのロックを外す関数
+    function unlockButtons() {
+        document.getElementById("timer").style.display = "none";
+        document.getElementById("btn-android").classList.remove("disabled");
+        document.getElementById("btn-iphone").classList.remove("disabled");
+        document.getElementById("btn-pc").classList.remove("disabled");
+    }
+
     const timerInterval = setInterval(updateTimer, 1000);
-    updateTimer(); // 初回起動
+    updateTimer();
 </script>
 
 </body>
