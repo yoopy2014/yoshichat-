@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <meta charset="UTF-8">
+    <script>
+        // URLの最後に「?early=true」がついているかチェック
+        const urlParams = new URLSearchParams(window.location.search);
+        const isEarlyAccess = urlParams.get('early') === 'true';
+
+        // 5月30日午前0時より前、かつ、早期アクセス合言葉がない場合だけ、ダウンロードページへ強制送還
+        if (new Date() < new Date("2026-05-30T00:00:00") && !isEarlyAccess) {
+            window.location.href = "download.html";
+        }
+    </script>
+    
+    <head>
     <script>
     // 5月30日午前0時より前なら、強制的にダウンロードページへ飛ばす
     if (new Date() < new Date("2026-05-30T00:00:00")) {
