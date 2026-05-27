@@ -1,231 +1,294 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ヨシチャット - ルーム</title>
-
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const isEarlyAccess = urlParams.get('early') === 'true';
-
-        // 5月30日午前0時より前、かつ、早期アクセスの合言葉がない場合だけ、ダウンロードページへ戻す
-        if (new Date() < new Date("2026-05-30T00:00:00") && !isEarlyAccess) {
-            window.location.href = "download.html";
-        }
-    </script>
-
+    // 5月30日午前0時より前なら、強制的にダウンロードページへ飛ばす
+    if (new Date() < new Date("2026-05-30T00:00:00")) {
+        window.location.href = "download.html";
+    }
+</script>
+    <meta charset="UTF-8">
+    <title>ヨシチャット（URL画像自動復活版）</title>
     <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #eef2f7;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        #login-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        .login-box {
-            width: 85%;
-            max-width: 400px;
-            text-align: center;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 12px;
-            background: white;
-        }
-        #chat-screen {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
-        }
-        header {
-            background-color: #52aad8;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        #messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .message {
-            background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            max-width: 70%;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            width: fit-content;
-        }
-        .message.my-message {
-            background-color: #dcf8c6;
-            align-self: flex-end;
-        }
-        .meta {
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 3px;
-        }
-        #input-area {
-            padding: 15px;
-            background: white;
-            display: flex;
-            border-top: 1px solid #ddd;
-        }
-        input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        button {
-            padding: 12px 20px;
-            background-color: #52aad8;
-            color: white;
+        body { font-family: sans-serif; background-color: #f5f7fa; margin: 0; padding: 20px; }
+        #login-box { background: white; padding: 20px; border-radius: 10px; max-width: 400px; margin: 50px auto; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+
+        #chat-box { max-width: 500px; margin: 0 auto; background: #ffffff; height: 80vh; display: flex; flex-direction: column; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #cce3f5; }
+        #room-header { background: #52aad8; color: white; padding: 12px; text-align: center; font-weight: bold; font-size: 16px; }
+        #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; }
+
+        .msg-container { display: flex; margin-bottom: 15px; max-width: 85%; position: relative; gap: 10px; }
+        .msg-content-area { display: flex; flex-direction: column; }
+
+        .msg-name { font-size: 12px; color: #666666; margin-bottom: 3px; }
+        .msg-bubble { padding: 10px 15px; border-radius: 18px; word-break: break-all; font-size: 15px; }
+
+        /* 🟦 自分 */
+        .my-msg { align-self: flex-end; justify-content: flex-end; }
+        .my-msg .msg-bubble { background-color: #52aad8; color: white; }
+        .my-msg .msg-name, .my-msg .avatar-svg-container { display: none; }
+
+        /* ⬜ 相手 */
+        .other-msg { align-self: flex-start; justify-content: flex-start; }
+        .other-msg .msg-bubble { background-color: #eaf3f9; color: #333333; }
+
+        /* 👤 人マークアイコン */
+        .avatar-svg-container { width: 42px; height: 42px; cursor: pointer; flex-shrink: 0; margin-top: 5px; }
+        .avatar-svg-container svg { width: 100%; height: 100%; border-radius: 50%; }
+
+        /* 📸 復活した画像のスタイル */
+        .shared-img { max-width: 100%; max-height: 200px; border-radius: 10px; margin-top: 5px; display: block; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* ❤️ いいね */
+        .like-area { display: flex; align-items: center; gap: 3px; margin-top: 4px; font-size: 12px; color: #8e8e93; user-select: none; }
+        .my-msg .like-area { justify-content: flex-end; }
+        .like-btn { cursor: pointer; display: inline-block; }
+        .liked { color: #ff3b30; font-weight: bold; }
+
+        /* ⌨️ 入力エリア */
+        #input-area { display: flex; padding: 12px; background: #ffffff; border-top: 1px solid #eeeeee; align-items: center; }
+        #message-input { flex: 1; padding: 12px 15px; border: 1px solid #dddddd; border-radius: 24px; font-size: 16px; background: #f8f9fa; }
+
+        /* 送信ボタン（お友達デザイン：青い三角） */
+        .send-img-btn { width: 45px; height: 45px; background: none; border: none; cursor: pointer; padding: 0; margin-left: 8px; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; }
+        .send-img-btn:active { transform: scale(0.9); }
+        .send-img-btn svg { width: 100%; height: 100%; }
+
+        /* 🖼️ プロフィール画面 */
+        .profile-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 999; }
+        .profile-card { background: white; width: 290px; padding: 25px 20px; border-radius: 15px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .profile-card .pop-avatar-area { width: 80px; height: 80px; margin: 0 auto 15px auto; }
+        .profile-card h3 { margin: 10px 0 5px 0; color: #333; }
+        .profile-card p { margin: 0 0 15px 0; font-size: 13px; color: #666; }
+
+        /* 🟢 友達追加ボタン（お友達デザイン：緑のウインクプラス） */
+        .friend-add-program-btn {
+            width: 120px;
+            height: 120px;
+            background: none;
             border: none;
-            border-radius: 6px;
-            margin-left: 10px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
+            margin: 10px auto;
+            display: block;
+            transition: transform 0.1s;
+            padding: 0;
         }
+        .friend-add-program-btn:active { transform: scale(0.92); }
+        .friend-add-program-btn svg { width: 100%; height: 100%; }
+
+        .close-profile { display: block; margin-top: 15px; padding: 8px 0; background: #f0f0f2; color: #333; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        input[type="text"], input[type="email"] { width: 85%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        #logout-btn { background: #ff3b30; font-size: 11px; padding: 4px 8px; border-radius: 4px; margin: 5px auto; cursor: pointer; color: white; border: none; opacity: 0.7; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <h2 style="color: #52aad8; margin-top: 0;">💬 ヨシチャット</h2>
-            <p style="color: #666; font-size: 14px;">チャットで使う名前を入力してね！</p>
-            <input type="text" id="username-input" placeholder="名前を入力...">
-            <button onclick="login()" style="width: 100%; margin: 15px 0 0 0;">チャットに入る</button>
-        </div>
+<div id="login-box">
+    <h2>ヨシチャットにログイン</h2>
+    <br>
+    <div style="width:80px; height:80px; margin:0 auto 20px auto;">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#52aad8"/><text x="50" y="65" font-size="45" fill="white" font-family="sans-serif" text-anchor="middle">👤</text></svg>
     </div>
 
-    <div id="chat-screen">
-        <header>💬 ヨシチャット ルーム</header>
-        <div id="messages"></div>
-        <div id="input-area">
-            <input type="text" id="message-input" placeholder="メッセージを入力..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">送信</button>
-        </div>
+    <input type="email" id="user-email" placeholder="メールアドレスを入力"><br>
+    <input type="text" id="user-name" placeholder="表示名（ニックネーム）を入力"><br>
+    <input type="text" id="chat-room" placeholder="チャットルーム名を入力" value="メイン部屋"><br>
+    <button onclick="loginAndStart()" style="padding: 10px 20px; background: #52aad8; color: white; border: none; border-radius: 20px; cursor: pointer; width: 90%; margin-top: 10px; font-weight: bold;">チャットに入る</button>
+</div>
+
+<div id="chat-box" style="display:none;">
+    <div id="room-header">ルーム: <span id="current-room-name"></span></div>
+    <div id="messages"></div>
+    <div id="input-area">
+        <input type="text" id="message-input" placeholder="メッセージ、または画像のURLを入力...">
+        <button class="send-img-btn" onclick="sendMessage()">
+            <svg viewBox="0 0 100 100">
+                <path d="M15,10 L85,50 L15,90 Z" fill="#52aad8" stroke="#52aad8" stroke-width="8" stroke-linejoin="round"/>
+                <path d="M22,18 L75,50 L22,82 Z" fill="#ffffff"/>
+                <text x="50" y="56" font-size="14" font-family="sans-serif" font-weight="bold" fill="#52aad8" text-anchor="middle">送信</text>
+            </svg>
+        </button>
     </div>
+    <button id="logout-btn" onclick="logout()">別のルームに切り替える</button>
+</div>
 
-    <script>
-        let myName = "";
-        let socket;
+<div id="profileModal" class="profile-modal" onclick="closeProfile()">
+    <div class="profile-card" onclick="event.stopPropagation()">
+        <div class="pop-avatar-area">
+            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#52aad8"/><text x="50" y="65" font-size="45" fill="white" font-family="sans-serif" text-anchor="middle">👤</text></svg>
+        </div>
+        <h3 id="popName">ユーザー名</h3>
+        <p id="popEmail">email@example.com</p>
 
-        // ログイン処理
-        function login() {
-            const nameInput = document.getElementById("username-input").value.trim();
-            if (!nameInput) {
-                alert("名前を入力してください！");
-                return;
-            }
-            myName = nameInput;
-            
-            // ログイン画面を隠してチャット画面を出す
-            document.getElementById("login-screen").style.display = "none";
-            document.getElementById("chat-screen").style.display = "flex";
+        <button id="addFriendBtn" class="friend-add-program-btn" title="友達追加して個人チャット">
+            <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#5cb85c" stroke-width="6"/>
+                <path d="M28,45 Q36,33 44,45" fill="none" stroke="#5cb85c" stroke-width="5.5" stroke-linecap="round"/>
+                <circle cx="68" cy="42" r="5" fill="#5cb85c"/>
+                <path d="M33,62 Q50,78 67,62" fill="none" stroke="#5cb85c" stroke-width="5.5" stroke-linecap="round"/>
+                <path d="M76,14 V32 M67,23 H85" fill="none" stroke="#5cb85c" stroke-width="5.5" stroke-linecap="round"/>
+            </svg>
+        </button>
 
-            // 🌐 WebSocketサーバーに接続（君のサーバーのURLに変えてもOKだよ！）
-            connectWebSocket();
+        <div class="close-profile" onclick="closeProfile()">閉じる</div>
+    </div>
+</div>
+
+<script>
+    let ws;
+    let myEmail = "";
+    let currentRoom = "";
+    const SERVER_URL = "https://yoshichat-server.yoopy2014.workers.dev";
+    const USER_SVG = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#52aad8"/><text x="50" y="65" font-size="45" fill="white" font-family="sans-serif" text-anchor="middle">👤</text></svg>`;
+
+    window.onload = function() {
+        if (localStorage.getItem("yoshichat_email")) document.getElementById('user-email').value = localStorage.getItem("yoshichat_email");
+        if (localStorage.getItem("yoshichat_name")) document.getElementById('user-name').value = localStorage.getItem("yoshichat_name");
+        if (localStorage.getItem("yoshichat_room")) document.getElementById('chat-room').value = localStorage.getItem("yoshichat_room");
+    };
+
+    // 🔗 入力された文字がURL（画像）かどうかをチェックして自動で復活させる関数
+    function formatMessage(messageText) {
+        const trimmed = messageText.trim();
+        // http:// または https:// から始まっているかチェック
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            // 画像リンクとして復活させて表示！
+            return `<div class="msg-bubble">
+                        <a href="${trimmed}" target="_blank" style="color:inherit; font-size:12px; display:block; margin-bottom:5px;">${trimmed}</a>
+                        <img class="shared-img" src="${trimmed}" alt="プレビューに失敗しました" onclick="window.open('${trimmed}')">
+                    </div>`;
+        }
+        // 普通のメッセージならそのまま吹き出しにする
+        return `<div class="msg-bubble">${messageText}</div>`;
+    }
+
+    async function loginAndStart() {
+        myEmail = document.getElementById('user-email').value.trim();
+        const myName = document.getElementById('user-name').value.trim();
+        currentRoom = document.getElementById('chat-room').value.trim();
+
+        if (!myEmail || !myName || !currentRoom) {
+            alert('すべて入力してください！');
+            return;
         }
 
-        // WebSocket通信の設定
-        function connectWebSocket() {
-            // テスト用の無料公開WebSocketサーバー（必要に応じて変更してね）
-            socket = new WebSocket("wss://echo.websocket.org");
+        try {
+            await fetch(`${SERVER_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: myEmail, name: myName })
+            });
 
-            socket.onopen = () => {
-                showSystemMessage("サーバーに接続しました！");
-            };
+            localStorage.setItem("yoshichat_email", myEmail);
+            localStorage.setItem("yoshichat_name", myName);
+            localStorage.setItem("yoshichat_room", currentRoom);
+            document.getElementById('current-room-name').innerText = currentRoom;
 
-            socket.onmessage = (event) => {
-                // 送られてきたデータを画面に表示
-                try {
-                    const data = JSON.parse(event.data);
-                    displayMessage(data.name, data.text, false);
-                } catch(e) {
-                    // もしJSONじゃなく普通の文字が届いた場合
-                    displayMessage("だれか", event.data, false);
+            const wsUrl = `${SERVER_URL.replace("https://", "wss://")}?room=${encodeURIComponent(currentRoom)}`;
+            ws = new WebSocket(wsUrl);
+
+            document.getElementById('messages').innerHTML = '';
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const messagesDiv = document.getElementById('messages');
+
+                if (data.senderName === "システム") {
+                    messagesDiv.innerHTML += `<div style="text-align:center; color:gray; font-size:12px; margin:10px;">${data.message}</div>`;
+                    return;
                 }
+
+                const isMe = (data.senderEmail === myEmail);
+                const msgClass = isMe ? 'my-msg' : 'other-msg';
+                const displayName = isMe ? '自分' : data.senderName;
+                const msgId = data.timestamp || Date.now();
+
+                // URL変換システムを通した中身をセット
+                const bubbleHtml = formatMessage(data.message);
+
+                const msgHtml = `
+                    <div class="msg-container ${msgClass}">
+                        <div class="avatar-svg-container" onclick="showProfile('${data.senderName}', '${data.senderEmail}')">
+                            ${USER_SVG}
+                        </div>
+                        <div class="msg-content-area">
+                            <div class="msg-name">${displayName}</div>
+                            ${bubbleHtml}
+                            <div class="like-area">
+                                <span class="like-btn" id="btn-${msgId}" onclick="toggleLike('${msgId}')">♡</span>
+                                <span id="count-${msgId}">0</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                messagesDiv.innerHTML += msgHtml;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
             };
 
-            socket.onclose = () => {
-                showSystemMessage("サーバーから切断されました。再読み込みしてください。");
-            };
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('chat-box').style.display = 'flex';
+
+        } catch (error) {
+            alert('サーバーとの通信に失敗しました。');
         }
+    }
 
-        // メッセージを送信する
-        function sendMessage() {
-            const msgInput = document.getElementById("message-input");
-            const text = msgInput.value.trim();
-            if (!text) return;
+    function showProfile(name, email) {
+        document.getElementById('popName').innerText = name;
+        document.getElementById('popEmail').innerText = email;
 
-            const data = {
-                name: myName,
-                text: text
-            };
-
-            // 画面に自分の発言を表示
-            displayMessage(myName, text, true);
-
-            // サーバーに送信
-            if (socket && socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify(data));
-            }
-
-            msgInput.value = ""; // 入力欄を空にする
+        const btn = document.getElementById('addFriendBtn');
+        if (email === myEmail) {
+            btn.style.display = "none";
+        } else {
+            btn.style.display = "block";
+            btn.onclick = () => startPersonalChat(name, email);
         }
+        document.getElementById('profileModal').style.display = 'flex';
+    }
 
-        // エンターキーでも送信できるようにする
-        function handleKeyPress(event) {
-            if (event.key === "Enter") {
-                sendMessage();
-            }
+    function startPersonalChat(friendName, friendEmail) {
+        const dmRoomName = "🔒対談:" + friendName + "と自分";
+        alert(friendName + ' さんとの個人チャットに移動します！');
+        closeProfile();
+        if (ws) ws.close();
+        document.getElementById('chat-room').value = dmRoomName;
+        loginAndStart();
+    }
+
+    function closeProfile() { document.getElementById('profileModal').style.display = 'none'; }
+
+    function toggleLike(msgId) {
+        const likeBtn = document.getElementById(`btn-${msgId}`);
+        const likeCount = document.getElementById(`count-${msgId}`);
+        let currentCount = parseInt(likeCount.innerText);
+        if (likeBtn.classList.contains('liked')) {
+            likeBtn.classList.remove('liked');
+            likeBtn.innerText = '♡';
+            likeCount.innerText = currentCount - 1;
+        } else {
+            likeBtn.classList.add('liked');
+            likeBtn.innerText = '♥';
+            likeCount.innerText = currentCount + 1;
         }
+    }
 
-        // 画面にメッセージを表示する
-        function displayMessage(name, text, isMyMsg) {
-            const msgContainer = document.getElementById("messages");
-            const msgDiv = document.createElement("div");
-            msgDiv.classList.add("message");
-            if (isMyMsg) msgDiv.classList.add("my-message");
+    function sendMessage() {
+        const input = document.getElementById('message-input');
+        if (!input.value.trim()) return;
 
-            msgDiv.innerHTML = `<div class="meta">${name}</div><div>${text}</div>`;
-            msgContainer.appendChild(msgDiv);
-            
-            // 一番下まで自動スクロール
-            msgContainer.scrollTop = msgContainer.scrollHeight;
-        }
+        ws.send(JSON.stringify({
+            email: myEmail,
+            message: input.value,
+            timestamp: Date.now()
+        }));
+        input.value = '';
+    }
 
-        // システムメッセージを表示する
-        function showSystemMessage(text) {
-            const msgContainer = document.getElementById("messages");
-            const sysDiv = document.createElement("div");
-            sysDiv.style.cssText = "align-self: center; font-size: 12px; color: #aaa; margin: 5px 0;";
-            sysDiv.innerText = text;
-            msgContainer.appendChild(sysDiv);
-        }
-    </script>
-
+    function logout() { localStorage.removeItem("yoshichat_room"); location.reload(); }
+    document.getElementById('message-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+</script>
 </body>
+</html>
 </html>
