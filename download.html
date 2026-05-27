@@ -1,6 +1,3 @@
-<script>
-    if (new Date() < new Date("2026-05-30T00:00:00") && new URLSearchParams(window.location.search).get('early') !== 'true') { window.location.href = "download.html"; }
-</script>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,116 +8,35 @@
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: #f0f2f5;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0; padding: 0; color: #333;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
         }
         .container {
-            max-width: 500px;
-            width: 90%;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            margin: 20px 0;
+            max-width: 500px; width: 90%; background-color: #ffffff; padding: 30px;
+            border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;
         }
-        h1 {
-            color: #52aad8;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        .description {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
+        h1 { color: #52aad8; margin-bottom: 10px; font-size: 28px; }
+        .description { font-size: 14px; color: #666; margin-bottom: 30px; }
         .download-section {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #e9ecef;
+            background-color: #f8f9fa; padding: 20px; border-radius: 10px;
+            margin-bottom: 20px; border: 1px solid #e9ecef;
         }
-        .platform-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
+        .platform-title { font-weight: bold; margin-bottom: 10px; font-size: 16px; }
         .btn {
-            display: inline-block;
-            width: 80%;
-            padding: 12px 0;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: transform 0.2s, opacity 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: inline-block; width: 80%; padding: 12px 0; color: white;
+            text-decoration: none; border-radius: 8px; font-weight: bold; background-color: #cccccc;
+            pointer-events: none; /* 通常アクセスは全員クリックできないようにロック */
         }
-        .btn.disabled {
-            background-color: #cccccc !important;
-            color: #888888 !important;
-            pointer-events: none;
-            box-shadow: none;
-            transform: none !important;
-        }
-        .btn:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
-        }
-        .btn-android { background-color: #a4c639; }
-        .btn-iphone { background-color: #000000; }
-        .btn-pc { background-color: #0078d4; }
-        
-        .note {
-            font-size: 11px;
-            color: #888;
-            margin-top: 8px;
-            line-height: 1.4;
-        }
-        #timer {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff4757;
-            background: #ffeaa7;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: block;
+        #lock-notice {
+            font-size: 16px; font-weight: bold; color: #ff4757;
+            background: #ffeaa7; padding: 10px; border-radius: 5px; margin-bottom: 20px;
         }
         .early-access-box {
-            margin-top: 25px;
-            padding: 15px;
-            background-color: #f1f2f6;
-            border-radius: 8px;
-            font-size: 12px;
+            margin-top: 25px; padding: 15px; background-color: #f1f2f6; border-radius: 8px; font-size: 12px;
         }
-        .early-access-box input {
-            padding: 8px;
-            width: 70%;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 5px;
-        }
+        .early-access-box input { padding: 8px; width: 65%; border: 1px solid #ccc; border-radius: 4px; }
         .early-access-box button {
-            padding: 8px 12px;
-            background-color: #52aad8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #aaa;
+            padding: 8px 12px; background-color: #52aad8; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
         }
     </style>
 </head>
@@ -128,26 +44,18 @@
 
 <div class="container">
     <h1>ヨシチャット</h1>
-    <p class="description">みんなでリアルタイムにおしゃべりできるチャットアプリ！<br>自分の端末に合わせてえらんでね。</p>
+    <p class="description">みんなでリアルタイムにおしゃべりできるチャットアプリ！</p>
 
-    <div id="timer">公開までお待ちください...</div>
+    <div id="lock-notice">🚀 2026年5月30日 公開予定（現在はロック中）</div>
 
     <div class="download-section">
         <div class="platform-title">🤖 Androidの人（アプリ版）</div>
-        <a href="app-debug.apk" id="btn-android" class="btn btn-android disabled" download="Yoshichat.apk">アプリをダウンロード</a>
-        <p class="note">※ダウンロードしたAPKファイルを開いてインストールしてね。</p>
+        <div class="btn">アプリをダウンロード</div>
     </div>
 
     <div class="download-section">
         <div class="platform-title">🍏 iPhone / iPadの人</div>
-        <a href="index.html" id="btn-iphone" class="btn btn-iphone disabled">ブラウザで開く</a>
-        <p class="note">※開いたあと、「ホーム画面に追加」をするとアプリみたいに使えます！</p>
-    </div>
-
-    <div class="download-section">
-        <div class="platform-title">💻 パソコン（Windows / Mac）の人</div>
-        <a href="index.html" id="btn-pc" class="btn btn-pc disabled">大画面でチャットを開く</a>
-        <p class="note">※キーボードを使ってタイピングでおしゃべりしたいときにおすすめ！</p>
+        <div class="btn">ブラウザで開く</div>
     </div>
 
     <div class="early-access-box">
@@ -155,63 +63,21 @@
         <input type="email" id="friend-email" placeholder="メールアドレスを入力">
         <button onclick="checkEarlyAccess()">解除</button>
     </div>
-
-    <footer>
-        <p>&copy; 2026 ヨシチャット 開発チーム</p>
-    </footer>
 </div>
 
 <script>
-    // ★公開日時を設定（2026年5月30日 00:00:00）
-    const releaseDate = new Date("2026-05-30T00:00:00").getTime();
-
-    function updateTimer() {
-        const now = new Date().getTime();
-        const distance = releaseDate - now;
-
-        // 5月30日を過ぎたら自動で普通にロック解除
-        if (distance <= 0) {
-            unlockButtons();
-            clearInterval(timerInterval);
-            return;
-        }
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("timer").innerText = 
-            `🚀 公開まであと ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
-    }
-
-    // ★友達のメアドで早期ロック解除 ＆ その場で自動ジャンプ！
+    // 友達のメアドで早期ロック解除 ＆ その場で自動ジャンプ！
     function checkEarlyAccess() {
         const inputVal = document.getElementById("friend-email").value.trim();
         if (inputVal.toLowerCase() === "yuishisan0614@gmail.com") {
             alert("絵師の友達を確認しました！チャット画面へジャンプします！");
-            // ボタンを介さず、秘密の合言葉を付けて直接チャット画面に飛ばすよ
+            // 暴走の原因になるタイマー等は一切挟まず、直接 index.html へ強制ジャンプ！
             window.location.href = "index.html?early=true";
         } else {
             alert("登録されていないメールアドレスです。");
         }
     }
-
-    // 5月30日以降に通常アクセスした人用のロック解除関数
-    function unlockButtons() {
-        document.getElementById("timer").style.display = "none";
-        document.getElementById("btn-android").classList.remove("disabled");
-        document.getElementById("btn-iphone").classList.remove("disabled");
-        document.getElementById("btn-pc").classList.remove("disabled");
-        
-        document.getElementById("btn-iphone").href = "index.html";
-        document.getElementById("btn-pc").href = "index.html";
-    }
-
-    const timerInterval = setInterval(updateTimer, 1000);
-    updateTimer();
 </script>
 
 </body>
 </html>
-
