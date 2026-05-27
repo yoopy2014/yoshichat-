@@ -24,11 +24,16 @@
         .platform-title { font-weight: bold; margin-bottom: 10px; font-size: 16px; }
         .btn {
             display: inline-block; width: 80%; padding: 12px 0; color: white;
-            text-decoration: none; border-radius: 8px; font-weight: bold; background-color: #cccccc;
-            pointer-events: none; /* 通常アクセスは全員クリックできないようにロック */
+            text-decoration: none; border-radius: 8px; font-weight: bold; transition: transform 0.2s;
         }
-        #lock-notice {
-            font-size: 16px; font-weight: bold; color: #ff4757;
+        .btn.disabled {
+            background-color: #cccccc !important; color: #888888 !important; pointer-events: none;
+        }
+        .btn-android { background-color: #a4c639; }
+        .btn-iphone { background-color: #000000; }
+        .btn-pc { background-color: #0078d4; }
+        #timer {
+            font-size: 18px; font-weight: bold; color: #ff4757;
             background: #ffeaa7; padding: 10px; border-radius: 5px; margin-bottom: 20px;
         }
         .early-access-box {
@@ -46,16 +51,16 @@
     <h1>ヨシチャット</h1>
     <p class="description">みんなでリアルタイムにおしゃべりできるチャットアプリ！</p>
 
-    <div id="lock-notice">🚀 2026年5月30日 公開予定（現在はロック中）</div>
+    <div id="timer">残り時間を計算中...</div>
 
     <div class="download-section">
         <div class="platform-title">🤖 Androidの人（アプリ版）</div>
-        <div class="btn">アプリをダウンロード</div>
+        <a href="app-debug.apk" id="btn-android" class="btn btn-android disabled" download="Yoshichat.apk">アプリをダウンロード</a>
     </div>
 
     <div class="download-section">
         <div class="platform-title">🍏 iPhone / iPadの人</div>
-        <div class="btn">ブラウザで開く</div>
+        <a href="index.html" id="btn-iphone" class="btn btn-iphone disabled">ブラウザで開く</a>
     </div>
 
     <div class="early-access-box">
@@ -66,17 +71,46 @@
 </div>
 
 <script>
-    // 友達のメアドで早期ロック解除 ＆ その場で自動ジャンプ！
+    // 💡 公開日時をセット（2026年5月30日 00:00:00）
+    const releaseDate = new Date("2026-05-30T00:00:00").getTime();
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const distance = releaseDate - now;
+
+        // 5月30日を過ぎたら自動ロック解除
+        if (distance <= 0) {
+            document.getElementById("timer").style.display = "none";
+            document.getElementById("btn-android").classList.remove("disabled");
+            document.getElementById("btn-iphone").classList.remove("disabled");
+            document.getElementById("btn-iphone").href = "index.html";
+            clearInterval(timerInterval);
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("timer").innerText = 
+            `🚀 公開まであと ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
+    }
+
+    // 友達のメアドで早期ロック解除 ＆ 自動ジャンプ
     function checkEarlyAccess() {
         const inputVal = document.getElementById("friend-email").value.trim();
         if (inputVal.toLowerCase() === "yuishisan0614@gmail.com") {
             alert("絵師の友達を確認しました！チャット画面へジャンプします！");
-            // 暴走の原因になるタイマー等は一切挟まず、直接 index.html へ強制ジャンプ！
             window.location.href = "index.html?early=true";
         } else {
             alert("登録されていないメールアドレスです。");
         }
     }
+
+    // 1秒ごとにタイマーを更新
+    const timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
 </script>
 
 </body>
