@@ -168,7 +168,7 @@
 
         // 5月30日を過ぎたら自動で普通にロック解除
         if (distance <= 0) {
-            unlockButtons(false); // 通常アクセスとして解除
+            unlockButtons();
             clearInterval(timerInterval);
             return;
         }
@@ -182,36 +182,27 @@
             `🚀 公開まであと ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
     }
 
-    // 友達のメアドで早期ロック解除
+    // ★友達のメアドで早期ロック解除 ＆ その場で自動ジャンプ！
     function checkEarlyAccess() {
         const inputVal = document.getElementById("friend-email").value.trim();
         if (inputVal.toLowerCase() === "yuishisan0614@gmail.com") {
-            alert("絵師の友達を確認しました！先行ダウンロードロックを解除します！");
-            unlockButtons(true); // 早期アクセスとして解除！
+            alert("絵師の友達を確認しました！チャット画面へジャンプします！");
+            // ボタンを介さず、秘密の合言葉を付けて直接チャット画面に飛ばすよ
+            window.location.href = "index.html?early=true";
         } else {
             alert("登録されていないメールアドレスです。");
         }
     }
 
-    // ボタンのロックを外す関数
-    function unlockButtons(isEarly) {
+    // 5月30日以降に通常アクセスした人用のロック解除関数
+    function unlockButtons() {
         document.getElementById("timer").style.display = "none";
-        
-        // Androidボタン有効化
         document.getElementById("btn-android").classList.remove("disabled");
-        
-        // iPhone・PCボタン有効化
         document.getElementById("btn-iphone").classList.remove("disabled");
         document.getElementById("btn-pc").classList.remove("disabled");
-
-        // もし早期アクセス（友達の解除）なら、秘密の合言葉付きのURLに変える！
-        if (isEarly) {
-            document.getElementById("btn-iphone").href = "index.html?early=true";
-            document.getElementById("btn-pc").href = "index.html?early=true";
-        } else {
-            document.getElementById("btn-iphone").href = "index.html";
-            document.getElementById("btn-pc").href = "index.html";
-        }
+        
+        document.getElementById("btn-iphone").href = "index.html";
+        document.getElementById("btn-pc").href = "index.html";
     }
 
     const timerInterval = setInterval(updateTimer, 1000);
