@@ -78,9 +78,9 @@
         const now = new Date().getTime();
         const distance = releaseDate - now;
 
-        // 5月30日を過ぎたら全員自動ロック解除
+        // 💡 5月30日を過ぎている、またはスマホの時計が未来なら即時ロック解除！
         if (distance <= 0) {
-            unlockButtons(false);
+            unlockButtons(false); // ボタンをONにする関数を確実に呼び出す
             clearInterval(timerInterval);
             return;
         }
@@ -94,34 +94,41 @@
             `🚀 公開まであと ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
     }
 
-    // 友達のメアドでロック解除（選べるモード）
+    // 友達のメアドでロック解除
     function checkEarlyAccess() {
         const inputVal = document.getElementById("friend-email").value.trim();
         if (inputVal.toLowerCase() === "yuishisan0614@gmail.com") {
             alert("絵師の友達を確認しました！ボタンのロックを解除しました。使いたい方を押してね！");
-            unlockButtons(true); // 早期アクセスモードでボタンをONにする
+            unlockButtons(true);
         } else {
             alert("登録されていないメールアドレスです。");
         }
     }
 
-    // ボタンのロックを外す関数
+    // ★どんなタイミングでも確実にボタンのロックを外す関数
     function unlockButtons(isEarly) {
-        document.getElementById("timer").style.display = "none";
+        // タイマーの文字を消す
+        const timerEl = document.getElementById("timer");
+        if (timerEl) timerEl.style.display = "none";
         
-        // 両方のボタンを使えるようにする（グレーを解除）
-        document.getElementById("btn-android").classList.remove("disabled");
-        document.getElementById("btn-iphone").classList.remove("disabled");
+        // ボタンの要素をしっかり捕まえる
+        const btnAndroid = document.getElementById("btn-android");
+        const btnIphone = document.getElementById("btn-iphone");
 
-        if (isEarly) {
-            // 早期アクセスの場合は、ブラウザで開くボタンに「秘密の合言葉」を仕込む！
-            document.getElementById("btn-iphone").href = "index.html?early=true";
-        } else {
-            // 普通の公開後は合言葉なし
-            document.getElementById("btn-iphone").href = "index.html";
+        if (btnAndroid && btnIphone) {
+            // グレーのロックを解除！
+            btnAndroid.classList.remove("disabled");
+            btnIphone.classList.remove("disabled");
+
+            if (isEarly) {
+                btnIphone.href = "index.html?early=true";
+            } else {
+                btnIphone.href = "index.html";
+            }
         }
     }
 
+    // 最初に1回タイマーを動かしてから、1秒ごとのループをスタートさせる
     const timerInterval = setInterval(updateTimer, 1000);
     updateTimer();
 </script>
