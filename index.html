@@ -1,19 +1,4 @@
 <!DOCTYPE html>
-<script>
-    // 🔑 30日0時までブロックする仕組み
-    const releaseDate = new Date("May 30, 2026 00:00:00").getTime();
-    const isDev = new URLSearchParams(window.location.search).get('secret') === 'yoshi';
-    
-    if (new Date().getTime() < releaseDate && !isDev) {
-        document.body.innerHTML = `
-            <div style="text-align:center; padding-top:50px; font-family:sans-serif;">
-                <h1>🚧 まだ公開されていません</h1>
-                <p>30日の0時になったら自動的に開きます。</p>
-                <a href="download.html">戻る</a>
-            </div>
-        `;
-    }
-</script>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -40,6 +25,21 @@
     </style>
 </head>
 <body>
+    <script>
+    // 🔑 30日0時までブロックする仕組み
+    const releaseDate = new Date("May 30, 2026 00:00:00").getTime();
+    const isDev = new URLSearchParams(window.location.search).get('secret') === 'yoshi';
+    
+    if (new Date().getTime() < releaseDate && !isDev) {
+        document.body.innerHTML = `
+            <div style="text-align:center; padding-top:50px; font-family:sans-serif;">
+                <h1>🚧 まだ公開されていません</h1>
+                <p>30日の0時になったら自動的に開きます。</p>
+                <a href="download.html">戻る</a>
+            </div>
+        `;
+    }
+</script>
 
     <div id="login-screen">
         <div class="login-box">
