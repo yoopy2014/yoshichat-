@@ -3,91 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>yoshichat 公式ダウンロードサイト</title>
+    <title>yoshichat ダウンロード</title>
     <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
-            margin: 0; padding: 0; color: #333;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-        }
-        .container {
-            max-width: 600px; width: 90%; background: white; margin: 40px auto; padding: 30px;
-            border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;
-        }
-        h1 {
-            font-size: 36px; color: #0288d1; margin-bottom: 5px; font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .subtitle {
-            font-size: 16px; color: #666; margin-bottom: 30px;
-        }
-        .badge {
-            background-color: #0288d1; color: white; padding: 4px 12px;
-            border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block;
-            margin-bottom: 20px;
-        }
-        .btn-download {
-            display: inline-block; width: 85%; padding: 16px;
-            background: linear-gradient(135deg, #52aad8 0%, #4092bd 100%);
-            color: white; font-size: 18px; font-weight: bold; text-decoration: none;
-            border-radius: 8px; box-shadow: 0 4px 15px rgba(82, 170, 216, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s; margin-bottom: 20px;
-        }
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(82, 170, 216, 0.6);
-        }
-        .info-box {
-            background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
-            padding: 20px; text-align: left; margin-top: 30px;
-        }
-        .info-title {
-            font-weight: bold; color: #475569; margin-bottom: 10px; display: flex; align-items: center; gap: 5px;
-        }
-        ol { margin: 0; padding-left: 20px; color: #475569; font-size: 14px; line-height: 1.6; }
-        li { margin-bottom: 8px; }
-        footer { margin-top: auto; padding: 20px; font-size: 12px; color: #94a3b8; }
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 600px; margin: auto; }
+        .btn-download { display: block; text-align: center; padding: 15px; margin: 10px 0; border-radius: 8px; text-decoration: none; font-weight: bold; color: white; }
+        .apk-btn { background: #0288d1; }
+        .web-btn { background: #10ac84; }
+        .steps { background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
     </style>
 </head>
 <body>
+    <h1>yoshichat ダウンロード</h1>
+    
+    <a href="webchat.html" class="btn-download web-btn">🚀 ブラウザでチャットを始める</a>
+    <a href="app-debug.apk" class="btn-download apk-btn" download>📥 Androidアプリをダウンロード (APK)</a>
 
-    <div class="container">
-        <span class="badge">Android専用アプリ</span>
-        <h1>yoshichat</h1>
-        <div class="subtitle">リアルタイム・次世代チャットアプリケーション</div>
-
-        <!-- 📥 APKダウンロードボタン -->
-        <!-- GitHub上のAPKファイルの名前（app-debug.apkなど）に合わせてここを書き換えてね！ -->
-        <a href="app-debug.apk" class="btn-download" download>
-            📥 アプリをダウンロード (APK)
-        </a>
-
-        <!-- 🛠️ 起動・インストールの説明書 -->
-        <div class="info-box">
-            <div class="info-title">📱 インストール＆起動の手順</div>
-            <ol>
-                <li>上のボタンをタップして <b>「app-debug.apk」</b> をダウンロードします。</li>
-                <li>ダウンロード完了後、ファイルを開きます。</li>
-                <li>「セキュリティ上の理由から、このソースからの不明なアプリをインストールすることはできません」と表示された場合は、<b>設定をタップして「このソースのアプリを許可」をオン</b>にしてください。</li>
-                <li>インストールの確認画面が出るので、<b>「インストール」</b>をタップします。</li>
-                <li>インストールが完了したら<b>「開く」</b>を押して、アプリを起動してください！</li>
-            </ol>
-        </div>
-
-        <div class="info-box" style="border-left: 4px solid #1dd1a1;">
-            <div class="info-title" style="color: #1dd1a1;">✨ yoshichat の特徴</div>
-            <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 14px; line-height: 1.6; list-style-type: '🚀 ';">
-                <li>複数ルーム対応！好きな部屋を作って雑談やゲームの話ができる！</li>
-                <li>超高速通信！メッセージが秒速で届く！</li>
-                <li>【6月末アプデ予告】アイコン変更機能＆絵師特製スタンプ機能が解禁予定！</li>
-            </ul>
-        </div>
+    <div class="steps">
+        <h2>アプリのインストール手順</h2>
+        <ol>
+            <li>上記の「Androidアプリをダウンロード」をタップします。</li>
+            <li>ダウンロード完了後、ファイルを開きます。</li>
+            <li>「セキュリティ上の理由から、このソースから…」と出た場合、「設定」から「このソースのアプリを許可」をオンにします。</li>
+            <li>「インストール」をタップし、完了したら「開く」を押してください！</li>
+        </ol>
     </div>
 
-    <footer>
-        &copy; 2026 yoshichat Project. Powered by GitHub Pages.
-    </footer>
-
+    <h3>✨ yoshichat の特徴</h3>
+    <ul>
+        <li>🚀 複数ルーム対応！好きな部屋を作って雑談やゲームの話ができる！</li>
+        <li>⚡ 超高速通信！メッセージが秒速で届く！</li>
+        <li>🗓️ 【6月末アプデ予告】アイコン変更機能＆特製スタンプ機能が解禁予定！</li>
+    </ul>
 </body>
 </html>
