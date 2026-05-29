@@ -2,6 +2,29 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>yoshichat</title>
+    <style>
+        /* CSSで画面幅をスマホに完全に合わせる */
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* 余計なスクロールが出ないようにする */
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* 入力エリアをキーボードが出ても崩れないように固定 */
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>yoshichat - ブラウザ版</title>
     <style>
