@@ -2,70 +2,56 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>yoshichat - Gate</title>
+    <title>ヨシチャット - ようこそ</title>
     <style>
-        body {
-            margin: 0; height: 100vh;
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
-            display: flex; align-items: center; justify-content: center;
-            font-family: sans-serif;
-        }
-        .gate-card {
-            background: white; padding: 40px; border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center;
-        }
-        h1 { color: #0288d1; margin-bottom: 5px; }
-        #timer { font-size: 2rem; font-weight: bold; color: #333; margin: 20px 0; }
-        .btn {
-            display: block; width: 100%; padding: 15px; margin: 15px 0;
-            border-radius: 10px; text-decoration: none; font-weight: bold;
-            transition: all 0.3s; box-sizing: border-box;
-        }
-        .btn-disabled { background: #e0e0e0; color: #999; cursor: not-allowed; pointer-events: none; }
-        .btn-web { background: #10ac84; color: white; }
-        .btn-apk { background: #0288d1; color: white; }
+        body { margin: 0; padding: 20px; font-family: sans-serif; background: #f8f9fa; display: flex; justify-content: center; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
+        .timer-box { background: #fff3cd; padding: 15px; border-radius: 8px; font-weight: bold; color: #856404; margin: 20px 0; }
+        .category { background: #f1f3f5; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .btn { display: block; padding: 15px; margin-top: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .btn-disabled { background: #ced4da; color: #6c757d; cursor: not-allowed; pointer-events: none; }
+        .btn-active { background: #0288d1; color: white; }
     </style>
 </head>
 <body>
 
-    <div class="gate-card">
-        <h1>Welcome to yoshichat</h1>
-        <p>リリースまであと...</p>
-        <div id="timer">計算中...</div>
-        
-        <div id="actions">
-            <a href="webchat.html" id="webBtn" class="btn btn-disabled">🚀 ブラウザで開始 (準備中)</a>
-            <a href="app-debug.apk" id="apkBtn" class="btn btn-disabled" download>📥 アプリをインストール (準備中)</a>
-        </div>
+<div class="card">
+    <h1>ヨシチャット</h1>
+    <p>みんなでリアルタイムにおしゃべりできるチャットアプリ！</p>
+    
+    <div id="timer" class="timer-box">計算中...</div>
+
+    <div class="category">
+        <p>🤖 <strong>Androidの人（アプリ版）</strong></p>
+        <a href="app-debug.apk" id="apkBtn" class="btn btn-disabled" download>アプリをダウンロード</a>
     </div>
 
-    <script>
-        const releaseDate = new Date("May 30, 2026 00:00:00").getTime();
-        const urlParams = new URLSearchParams(window.location.search);
-        const isDev = urlParams.get('secret') === 'yoshi';
+    <div class="category">
+        <p>🍎 <strong>iPhone / iPad / PCの人</strong></p>
+        <a href="webchat.html" id="webBtn" class="btn btn-disabled">ブラウザでチャットを開く</a>
+    </div>
+</div>
 
-        const x = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = releaseDate - now;
+<script>
+    const releaseDate = new Date("May 30, 2026 00:00:00").getTime();
+    const isDev = new URLSearchParams(window.location.search).get('secret') === 'yoshi';
 
-            if (distance < 0 || isDev) {
-                clearInterval(x);
-                document.getElementById("timer").innerHTML = "OPEN!";
-                const webBtn = document.getElementById("webBtn");
-                const apkBtn = document.getElementById("apkBtn");
+    const x = setInterval(() => {
+        const now = new Date().getTime();
+        const dist = releaseDate - now;
 
-                webBtn.className = "btn btn-web";
-                webBtn.innerText = "🚀 ブラウザ版へ入室";
-                
-                apkBtn.className = "btn btn-apk";
-                apkBtn.innerText = "📥 アプリをインストール";
-            } else {
-                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("timer").innerHTML = `${h}時間 ${m}分 ${s}秒`;
-            }
-        }, 1000);
-    </script>
+        if (dist < 0 || isDev) {
+            clearInterval(x);
+            document.getElementById("timer").innerText = "🚀 公開中！今すぐ参加しよう！";
+            document.getElementById("apkBtn").className = "btn btn-active";
+            document.getElementById("webBtn").className = "btn btn-active";
+        } else {
+            const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((dist % (1000 * 60)) / 1000);
+            document.getElementById("timer").innerText = `🚀 公開まであと ${h}時間 ${m}分 ${s}秒`;
+        }
+    }, 1000);
+</script>
 </body>
-</html>ｂ
+</html>
