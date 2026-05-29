@@ -2,30 +2,45 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>yoshichat リリースまであと...</title>
+    <title>yoshichat - Gate</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; }
-        #timer { font-size: 3rem; font-weight: bold; color: #0288d1; margin: 20px 0; }
-        .btn { display: inline-block; padding: 15px 30px; margin: 10px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; }
-        .btn-disabled { background: #cccccc; color: #777777; cursor: not-allowed; pointer-events: none; }
-        .btn-active-web { background: #10ac84; color: white; }
-        .btn-active-apk { background: #0288d1; color: white; }
+        body {
+            margin: 0; height: 100vh;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-family: sans-serif;
+        }
+        .gate-card {
+            background: white; padding: 40px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center;
+        }
+        h1 { color: #0288d1; margin-bottom: 5px; }
+        #timer { font-size: 2rem; font-weight: bold; color: #333; margin: 20px 0; }
+        .btn {
+            display: block; width: 100%; padding: 15px; margin: 15px 0;
+            border-radius: 10px; text-decoration: none; font-weight: bold;
+            transition: all 0.3s; box-sizing: border-box;
+        }
+        .btn-disabled { background: #e0e0e0; color: #999; cursor: not-allowed; pointer-events: none; }
+        .btn-web { background: #10ac84; color: white; }
+        .btn-apk { background: #0288d1; color: white; }
     </style>
 </head>
 <body>
-    <h1>yoshichat リリースまで</h1>
-    <div id="timer">計算中...</div>
-    
-    <div id="actions">
-        <a href="webchat.html" id="webBtn" class="btn btn-disabled">🚀 ブラウザで開始 (準備中)</a>
-        <br>
-        <a href="app-debug.apk" id="apkBtn" class="btn btn-disabled" download>📥 アプリをダウンロード (準備中)</a>
+
+    <div class="gate-card">
+        <h1>Welcome to yoshichat</h1>
+        <p>リリースまであと...</p>
+        <div id="timer">計算中...</div>
+        
+        <div id="actions">
+            <a href="webchat.html" id="webBtn" class="btn btn-disabled">🚀 ブラウザで開始 (準備中)</a>
+            <a href="app-debug.apk" id="apkBtn" class="btn btn-disabled" download>📥 アプリをインストール (準備中)</a>
+        </div>
     </div>
 
     <script>
         const releaseDate = new Date("May 30, 2026 00:00:00").getTime();
-        
-        // 🔑 開発者用フラグ: URLに ?secret=yoshi を付けると即時解放！
         const urlParams = new URLSearchParams(window.location.search);
         const isDev = urlParams.get('secret') === 'yoshi';
 
@@ -33,30 +48,24 @@
             const now = new Date().getTime();
             const distance = releaseDate - now;
 
-            // 0時前でも isDev なら強制解放！
             if (distance < 0 || isDev) {
-                if (distance >= 0) {
-                    document.getElementById("timer").innerHTML = "開発者モード起動中";
-                } else {
-                    clearInterval(x);
-                    document.getElementById("timer").innerHTML = "公開中！";
-                }
-                
+                clearInterval(x);
+                document.getElementById("timer").innerHTML = "OPEN!";
                 const webBtn = document.getElementById("webBtn");
                 const apkBtn = document.getElementById("apkBtn");
 
-                webBtn.className = "btn btn-active-web";
-                webBtn.innerText = "🚀 ブラウザでチャットを始める";
+                webBtn.className = "btn btn-web";
+                webBtn.innerText = "🚀 ブラウザ版へ入室";
                 
-                apkBtn.className = "btn btn-active-apk";
-                apkBtn.innerText = "📥 Androidアプリをダウンロード";
+                apkBtn.className = "btn btn-apk";
+                apkBtn.innerText = "📥 アプリをインストール";
             } else {
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("timer").innerHTML = hours + "時間 " + minutes + "分 " + seconds + "秒";
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("timer").innerHTML = `${h}時間 ${m}分 ${s}秒`;
             }
         }, 1000);
     </script>
 </body>
-</html>
+</html>ｂ
