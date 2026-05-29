@@ -3,135 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ヨシチャット ダウンロード＆起動</title>
+    <title>yoshichat 公式ダウンロードサイト</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
             margin: 0; padding: 0; color: #333;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
         .container {
-            max-width: 500px; width: 90%; background-color: #ffffff; padding: 30px;
-            border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;
+            max-width: 600px; width: 90%; background: white; margin: 40px auto; padding: 30px;
+            border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;
         }
-        h1 { color: #52aad8; margin-bottom: 10px; font-size: 28px; }
-        .description { font-size: 14px; color: #666; margin-bottom: 30px; }
-        .download-section {
-            background-color: #f8f9fa; padding: 20px; border-radius: 10px;
-            margin-bottom: 20px; border: 1px solid #e9ecef;
+        h1 {
+            font-size: 36px; color: #0288d1; margin-bottom: 5px; font-weight: bold;
+            letter-spacing: 1px;
         }
-        .platform-title { font-weight: bold; margin-bottom: 10px; font-size: 16px; }
-        .btn {
-            display: inline-block; width: 80%; padding: 12px 0; color: white;
-            text-decoration: none; border-radius: 8px; font-weight: bold; transition: transform 0.2s;
+        .subtitle {
+            font-size: 16px; color: #666; margin-bottom: 30px;
         }
-        /* ロック中のグレーの見た目 */
-        .btn.disabled {
-            background-color: #cccccc !important; color: #888888 !important; pointer-events: none;
+        .badge {
+            background-color: #0288d1; color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block;
+            margin-bottom: 20px;
         }
-        .btn-android { background-color: #a4c639; }
-        .btn-iphone { background-color: #000000; }
-        #timer {
-            font-size: 18px; font-weight: bold; color: #ff4757;
-            background: #ffeaa7; padding: 10px; border-radius: 5px; margin-bottom: 20px;
+        .btn-download {
+            display: inline-block; width: 85%; padding: 16px;
+            background: linear-gradient(135deg, #52aad8 0%, #4092bd 100%);
+            color: white; font-size: 18px; font-weight: bold; text-decoration: none;
+            border-radius: 8px; box-shadow: 0 4px 15px rgba(82, 170, 216, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s; margin-bottom: 20px;
         }
-        .early-access-box {
-            margin-top: 25px; padding: 15px; background-color: #f1f2f6; border-radius: 8px; font-size: 12px;
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(82, 170, 216, 0.6);
         }
-        .early-access-box input { padding: 8px; width: 65%; border: 1px solid #ccc; border-radius: 4px; }
-        .early-access-box button {
-            padding: 8px 12px; background-color: #52aad8; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
+        .info-box {
+            background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+            padding: 20px; text-align: left; margin-top: 30px;
         }
+        .info-title {
+            font-weight: bold; color: #475569; margin-bottom: 10px; display: flex; align-items: center; gap: 5px;
+        }
+        ol { margin: 0; padding-left: 20px; color: #475569; font-size: 14px; line-height: 1.6; }
+        li { margin-bottom: 8px; }
+        footer { margin-top: auto; padding: 20px; font-size: 12px; color: #94a3b8; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>ヨシチャット</h1>
-    <p class="description">みんなでリアルタイムにおしゃべりできるチャットアプリ！</p>
+    <div class="container">
+        <span class="badge">Android専用アプリ</span>
+        <h1>yoshichat</h1>
+        <div class="subtitle">リアルタイム・次世代チャットアプリケーション</div>
 
-    <div id="timer">残り時間を計算中...</div>
+        <!-- 📥 APKダウンロードボタン -->
+        <!-- GitHub上のAPKファイルの名前（app-debug.apkなど）に合わせてここを書き換えてね！ -->
+        <a href="app-debug.apk" class="btn-download" download>
+            📥 アプリをダウンロード (APK)
+        </a>
 
-    <div class="download-section">
-        <div class="platform-title">🤖 Androidの人（アプリ版）</div>
-        <a href="app-debug.apk" id="btn-android" class="btn btn-android disabled" download="Yoshichat.apk">アプリをダウンロード</a>
+        <!-- 🛠️ 起動・インストールの説明書 -->
+        <div class="info-box">
+            <div class="info-title">📱 インストール＆起動の手順</div>
+            <ol>
+                <li>上のボタンをタップして <b>「app-debug.apk」</b> をダウンロードします。</li>
+                <li>ダウンロード完了後、ファイルを開きます。</li>
+                <li>「セキュリティ上の理由から、このソースからの不明なアプリをインストールすることはできません」と表示された場合は、<b>設定をタップして「このソースのアプリを許可」をオン</b>にしてください。</li>
+                <li>インストールの確認画面が出るので、<b>「インストール」</b>をタップします。</li>
+                <li>インストールが完了したら<b>「開く」</b>を押して、アプリを起動してください！</li>
+            </ol>
+        </div>
+
+        <div class="info-box" style="border-left: 4px solid #1dd1a1;">
+            <div class="info-title" style="color: #1dd1a1;">✨ yoshichat の特徴</div>
+            <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 14px; line-height: 1.6; list-style-type: '🚀 ';">
+                <li>複数ルーム対応！好きな部屋を作って雑談やゲームの話ができる！</li>
+                <li>超高速通信！メッセージが秒速で届く！</li>
+                <li>【6月末アプデ予告】アイコン変更機能＆絵師特製スタンプ機能が解禁予定！</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="download-section">
-        <div class="platform-title">🍏 iPhone / iPad / PCの人</div>
-        <a href="index.html" id="btn-iphone" class="btn btn-iphone disabled">ブラウザでチャットを開く</a>
-    </div>
-
-    <div class="early-access-box">
-        <p style="margin: 0 0 8px 0; font-weight: bold; color: #666;">🛠️ 共同開発者・先行ダウンロード</p>
-        <input type="email" id="friend-email" placeholder="メールアドレスを入力">
-        <button onclick="checkEarlyAccess()">解除</button>
-    </div>
-</div>
-
-<script>
-    // 公開日時をセット（2026年5月30日 00:00:00）
-    const releaseDate = new Date("2026-05-30T00:00:00").getTime();
-
-    function updateTimer() {
-        const now = new Date().getTime();
-        const distance = releaseDate - now;
-
-        // 💡 5月30日を過ぎている、またはスマホの時計が未来なら即時ロック解除！
-        if (distance <= 0) {
-            unlockButtons(false); // ボタンをONにする関数を確実に呼び出す
-            clearInterval(timerInterval);
-            return;
-        }
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("timer").innerText = 
-            `🚀 公開まであと ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
-    }
-
-    // 友達のメアドでロック解除
-    function checkEarlyAccess() {
-        const inputVal = document.getElementById("friend-email").value.trim();
-        if (inputVal.toLowerCase() === "yuishisan0614@gmail.com") {
-            alert("絵師の友達を確認しました！ボタンのロックを解除しました。使いたい方を押してね！");
-            unlockButtons(true);
-        } else {
-            alert("登録されていないメールアドレスです。");
-        }
-    }
-
-    // ★どんなタイミングでも確実にボタンのロックを外す関数
-    function unlockButtons(isEarly) {
-        // タイマーの文字を消す
-        const timerEl = document.getElementById("timer");
-        if (timerEl) timerEl.style.display = "none";
-        
-        // ボタンの要素をしっかり捕まえる
-        const btnAndroid = document.getElementById("btn-android");
-        const btnIphone = document.getElementById("btn-iphone");
-
-        if (btnAndroid && btnIphone) {
-            // グレーのロックを解除！
-            btnAndroid.classList.remove("disabled");
-            btnIphone.classList.remove("disabled");
-
-            if (isEarly) {
-                btnIphone.href = "index.html?early=true";
-            } else {
-                btnIphone.href = "index.html";
-            }
-        }
-    }
-
-    // 最初に1回タイマーを動かしてから、1秒ごとのループをスタートさせる
-    const timerInterval = setInterval(updateTimer, 1000);
-    updateTimer();
-</script>
+    <footer>
+        &copy; 2026 yoshichat Project. Powered by GitHub Pages.
+    </footer>
 
 </body>
 </html>
