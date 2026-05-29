@@ -2,37 +2,48 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>yoshichat ダウンロード</title>
+    <title>yoshichat リリースまであと...</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 600px; margin: auto; }
-        .btn-download { display: block; text-align: center; padding: 15px; margin: 10px 0; border-radius: 8px; text-decoration: none; font-weight: bold; color: white; }
-        .apk-btn { background: #0288d1; }
-        .web-btn { background: #10ac84; }
-        .steps { background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        body { font-family: sans-serif; text-align: center; padding: 50px; }
+        #timer { font-size: 3rem; font-weight: bold; color: #0288d1; margin: 20px 0; }
+        .hidden { display: none; }
+        .btn-download { display: inline-block; padding: 15px 30px; background: #10ac84; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>yoshichat ダウンロード</h1>
+    <h1>yoshichat リリースまで</h1>
+    <div id="timer">計算中...</div>
     
-    <a href="webchat.html" class="btn-download web-btn">🚀 ブラウザでチャットを始める</a>
-    <a href="app-debug.apk" class="btn-download apk-btn" download>📥 Androidアプリをダウンロード (APK)</a>
-
-    <div class="steps">
-        <h2>アプリのインストール手順</h2>
-        <ol>
-            <li>上記の「Androidアプリをダウンロード」をタップします。</li>
-            <li>ダウンロード完了後、ファイルを開きます。</li>
-            <li>「セキュリティ上の理由から、このソースから…」と出た場合、「設定」から「このソースのアプリを許可」をオンにします。</li>
-            <li>「インストール」をタップし、完了したら「開く」を押してください！</li>
-        </ol>
+    <!-- リリース時間になるまで隠しておく場所 -->
+    <div id="release-content" class="hidden">
+        <h2>公開開始！</h2>
+        <a href="webchat.html" class="btn-download">🚀 ブラウザでチャットを始める</a>
+        <br><br>
+        <a href="app-debug.apk" class="btn-download" style="background:#0288d1;">📥 Androidアプリをダウンロード</a>
     </div>
 
-    <h3>✨ yoshichat の特徴</h3>
-    <ul>
-        <li>🚀 複数ルーム対応！好きな部屋を作って雑談やゲームの話ができる！</li>
-        <li>⚡ 超高速通信！メッセージが秒速で届く！</li>
-        <li>🗓️ 【6月末アプデ予告】アイコン変更機能＆特製スタンプ機能が解禁予定！</li>
-    </ul>
+    <script>
+        // 🗓️ 2026年5月30日 00:00:00 を設定
+        const releaseDate = new Date("May 30, 2026 00:00:00").getTime();
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = releaseDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("timer").innerHTML = hours + "時間 " + minutes + "分 " + seconds + "秒";
+
+            // 0時になったら表示を切り替える
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("timer").innerHTML = "公開中！";
+                document.getElementById("release-content").classList.remove("hidden");
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
