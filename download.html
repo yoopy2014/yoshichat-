@@ -6,42 +6,55 @@
     <style>
         body { font-family: sans-serif; text-align: center; padding: 50px; }
         #timer { font-size: 3rem; font-weight: bold; color: #0288d1; margin: 20px 0; }
-        .hidden { display: none; }
-        .btn-download { display: inline-block; padding: 15px 30px; background: #10ac84; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        .btn { display: inline-block; padding: 15px 30px; margin: 10px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; }
+        .btn-disabled { background: #cccccc; color: #777777; cursor: not-allowed; pointer-events: none; }
+        .btn-active-web { background: #10ac84; color: white; }
+        .btn-active-apk { background: #0288d1; color: white; }
     </style>
 </head>
 <body>
     <h1>yoshichat リリースまで</h1>
     <div id="timer">計算中...</div>
     
-    <!-- リリース時間になるまで隠しておく場所 -->
-    <div id="release-content" class="hidden">
-        <h2>公開開始！</h2>
-        <a href="webchat.html" class="btn-download">🚀 ブラウザでチャットを始める</a>
-        <br><br>
-        <a href="app-debug.apk" class="btn-download" style="background:#0288d1;">📥 Androidアプリをダウンロード</a>
+    <div id="actions">
+        <a href="webchat.html" id="webBtn" class="btn btn-disabled">🚀 ブラウザで開始 (準備中)</a>
+        <br>
+        <a href="app-debug.apk" id="apkBtn" class="btn btn-disabled" download>📥 アプリをダウンロード (準備中)</a>
     </div>
 
     <script>
-        // 🗓️ 2026年5月30日 00:00:00 を設定
         const releaseDate = new Date("May 30, 2026 00:00:00").getTime();
+        
+        // 🔑 開発者用フラグ: URLに ?secret=yoshi を付けると即時解放！
+        const urlParams = new URLSearchParams(window.location.search);
+        const isDev = urlParams.get('secret') === 'yoshi';
 
         const x = setInterval(function() {
             const now = new Date().getTime();
             const distance = releaseDate - now;
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // 0時前でも isDev なら強制解放！
+            if (distance < 0 || isDev) {
+                if (distance >= 0) {
+                    document.getElementById("timer").innerHTML = "開発者モード起動中";
+                } else {
+                    clearInterval(x);
+                    document.getElementById("timer").innerHTML = "公開中！";
+                }
+                
+                const webBtn = document.getElementById("webBtn");
+                const apkBtn = document.getElementById("apkBtn");
 
-            document.getElementById("timer").innerHTML = hours + "時間 " + minutes + "分 " + seconds + "秒";
-
-            // 0時になったら表示を切り替える
-            if (distance < 0) {
-                clearInterval(x);
-                document.getElementById("timer").innerHTML = "公開中！";
-                document.getElementById("release-content").classList.remove("hidden");
+                webBtn.className = "btn btn-active-web";
+                webBtn.innerText = "🚀 ブラウザでチャットを始める";
+                
+                apkBtn.className = "btn btn-active-apk";
+                apkBtn.innerText = "📥 Androidアプリをダウンロード";
+            } else {
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("timer").innerHTML = hours + "時間 " + minutes + "分 " + seconds + "秒";
             }
         }, 1000);
     </script>
