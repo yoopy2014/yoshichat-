@@ -2,52 +2,66 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>yoshichat</title>
     <style>
-        body { margin: 0; padding: 0; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; }
-        #chatBox { flex: 1; overflow-y: auto; padding: 10px; background: #f0f0f0; }
-        .msg { background: white; padding: 8px; margin: 5px 0; border-radius: 8px; }
-        .input-area { display: flex; padding: 10px; border-top: 1px solid #ccc; background: white; }
-        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; background: #0288d1; color: white; border: none; border-radius: 4px; margin-left: 5px; }
+        body { font-family: sans-serif; padding: 20px; }
+        .box { max-width: 400px; margin: auto; }
+        input { width: 100%; padding: 10px; margin: 10px 0; }
+        button { width: 100%; padding: 10px; background: #0288d1; color: white; border: none; }
     </style>
 </head>
 <body>
 
-<!-- ガード処理 -->
-<script>
-    const releaseDate = new Date("May 30, 2026 00:00:00").getTime();
-    const isDev = new URLSearchParams(window.location.search).get('secret') === 'yoshi';
-    if (new Date().getTime() < releaseDate && !isDev) {
-        document.body.innerHTML = '<div style="text-align:center; padding-top:100px;"><h1>🚧 公開準備中</h1><a href="download.html">戻る</a></div>';
-    }
-</script>
+<div id="loginScreen" class="box">
+    <h2>ヨシチャット入室</h2>
+    <input type="text" id="username" placeholder="表示名">
+    <input type="email" id="email" placeholder="メールアドレス">
+    <button onclick="enterChat()">入室する</button>
+</div>
 
-<!-- チャット画面 -->
-<div id="chatBox"></div>
-<div class="input-area">
-    <input type="text" id="msgInput" placeholder="メッセージを入力...">
+<div id="chatScreen" class="box" style="display:none;">
+    <div id="chatBox" style="height:300px; overflow-y:scroll; border:1px solid #ccc; padding:10px;"></div>
+    <input type="text" id="msgInput" placeholder="メッセージ...">
     <button onclick="send()">送信</button>
 </div>
 
 <script>
-    // 名前はログイン時に保存したlocalStorageから取得！
-    const myName = localStorage.getItem('username') || "名無しさん";
+    // ページ読み込み時に履歴を確認
+    window.onload = () => {
+        const savedName = localStorage.getItem('username');
+        const savedEmail = localStorage.getItem('email');
+        
+        // 履歴があれば自動で入室させる
+        if(savedName && savedEmail) {
+            showChat();
+        }
+    };
+
+    function enterChat() {
+        const name = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        if(!name || !email) { alert("入力してね！"); return; }
+
+        // 入力を記憶
+        localStorage.setItem('username', name);
+        localStorage.setItem('email', email);
+        showChat();
+    }
+
+    function showChat() {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('chatScreen').style.display = 'block';
+    }
 
     function send() {
-        const input = document.getElementById('msgInput');
-        const text = input.value;
-        if (!text) return;
-
-        // サーバーへ送信（名前付き）
-        const data = { username: myName, text: text };
-        // ※ここにWebSocketやfetchの送信処理を入れてね
+        const text = document.getElementById('msgInput').value;
+        const name = localStorage.getItem('username');
         
-        // 画面に即時表示
-        const chatBox = document.getElementById('chatBox');
-        chatBox.innerHTML += `<div class="msg"><strong>${myName}</strong>: ${text}</div>`;
-        input.value = '';
+        // サーバーへ送信（nameとtextをセット）
+        console.log("送信:", { name, text }); 
+
+        document.getElementById('chatBox').innerHTML += `<div><strong>${name}</strong>: ${text}</div>`;
+        document.getElementById('msgInput').value = '';
     }
 </script>
 </body>
