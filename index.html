@@ -2,66 +2,323 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>yoshichat</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>yoshichat</title>
+        <style>
+            /* CSSで画面幅をスマホに完全に合わせる */
+            body {
+                width: 100vw;
+                height: 100vh;
+                overflow: hidden; /* 余計なスクロールが出ないようにする */
+                margin: 0;
+                padding: 0;
+            }
+
+            /* 入力エリアをキーボードが出ても崩れないように固定 */
+            .input-area {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yoshichat - ルーム選択</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .box { max-width: 400px; margin: auto; }
-        input { width: 100%; padding: 10px; margin: 10px 0; }
-        button { width: 100%; padding: 10px; background: #0288d1; color: white; border: none; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0; padding: 0; background-color: #f5f5f5;
+            display: flex; flex-direction: column; height: 100vh;
+        }
+
+        /* 🚪 ログイン・ルーム選択画面 */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+        .login-box {
+            background: white; padding: 30px; border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 85%; max-width: 400px; text-align: center;
+        }
+        .login-box h2 { color: #0288d1; margin-bottom: 20px; }
+        .login-input {
+            width: 100%; padding: 12px; margin-bottom: 15px;
+            border: 1px solid #ccc; border-radius: 8px; font-size: 15px; outline: none;
+        }
+        .login-input:focus { border-color: #0288d1; }
+
+        /* 🕒 ルーム履歴エリアのスタイル */
+        .history-title {
+            font-size: 13px; color: #666; text-align: left; margin: 5px 0; font-weight: bold;
+        }
+        .history-container {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; justify-content: flex-start;
+        }
+        .history-tag {
+            background-color: #e0f2fe; color: #0288d1; padding: 6px 12px; border-radius: 15px;
+            font-size: 13px; cursor: pointer; border: 1px solid #bae6fd; font-weight: bold;
+        }
+        .history-tag:hover { background-color: #bae6fd; }
+
+        .login-btn {
+            width: 100%; padding: 12px; background-color: #0288d1; color: white;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
+        }
+        .login-btn:active { background-color: #026ba4; }
+
+        /* 💬 チャット画面 */
+        #chat-screen { display: none; flex-direction: column; height: 100vh; width: 100%; }
+
+        /* チャットヘッダー */
+        .header {
+            background-color: #0288d1; color: white; padding: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: bold; font-size: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #room-title { font-size: 16px; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; }
+        .btn-leave {
+            background-color: #ff3f3f; color: white; border: none;
+            padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer;
+        }
+        .btn-leave:active { background-color: #cc2a2a; }
+
+        /* メッセージ表示エリア */
+        #messages {
+            flex: 1; overflow-y: auto; padding: 15px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .msg-line { display: flex; flex-direction: column; margin-bottom: 5px; }
+        .msg-name { font-size: 12px; color: #666; margin-bottom: 2px; }
+        .msg-text {
+            background-color: white; padding: 10px 14px; border-radius: 12px;
+            max-width: 80%; width: fit-content; font-size: 15px; line-height: 1.4;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); word-break: break-all;
+        }
+        /* 自分が送信したメッセージ */
+        .msg-me { align-self: flex-end; }
+        .msg-me .msg-name { text-align: right; color: #0288d1; font-weight: bold; }
+        .msg-me .msg-text { background-color: #dcf8c6; align-self: flex-end; }
+
+        /* 開発者専用バッジ */
+        .dev-badge {
+            background-color: #ff3f3f; color: white; font-size: 10px;
+            padding: 2px 6px; border-radius: 10px; margin-left: 5px; font-weight: bold;
+        }
+
+        /* 入力エリア */
+        .input-area {
+            background-color: white; padding: 10px; display: flex; gap: 10px;
+            border-top: 1px solid #ddd;
+        }
+        #messageInput {
+            flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px;
+            font-size: 15px; outline: none;
+        }
+        #messageInput:focus { border-color: #0288d1; }
+        #sendBtn {
+            background-color: #0288d1; color: white; border: none;
+            padding: 0 20px; border-radius: 20px; font-weight: bold;
+            font-size: 15px; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-<div id="loginScreen" class="box">
-    <h2>ヨシチャット入室</h2>
-    <input type="text" id="username" placeholder="表示名">
-    <input type="email" id="email" placeholder="メールアドレス">
-    <button onclick="enterChat()">入室する</button>
+<div id="login-screen">
+    <div class="login-box">
+        <h2>yoshichat ログイン</h2>
+        <input type="text" id="usernameInput" class="login-input" placeholder="名前を入力（初回登録用）...">
+        <input type="email" id="emailInput" class="login-input" placeholder="メールアドレスを入力...">
+        <input type="text" id="roomInput" class="login-input" placeholder="入るルーム名（例: 雑談、ゲーム）...">
+
+        <div class="history-title">🕒 最近入ったルーム:</div>
+        <div id="roomHistory" class="history-container"></div>
+
+        <button class="login-btn" onclick="joinChat()">ルームに入る</button>
+    </div>
 </div>
 
-<div id="chatScreen" class="box" style="display:none;">
-    <div id="chatBox" style="height:300px; overflow-y:scroll; border:1px solid #ccc; padding:10px;"></div>
-    <input type="text" id="msgInput" placeholder="メッセージ...">
-    <button onclick="send()">送信</button>
+<div id="chat-screen">
+    <div class="header">
+        <span>yoshichat</span>
+        <span id="room-title">ルーム: 未選択</span>
+        <button class="btn-leave" onclick="leaveChat()">退出</button>
+    </div>
+    <div id="messages"></div>
+
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="メッセージを入力..." onkeypress="handleKeyPress(event)">
+        <button id="sendBtn" onclick="sendMessage()">送信</button>
+    </div>
 </div>
 
 <script>
-    // ページ読み込み時に履歴を確認
-    window.onload = () => {
-        const savedName = localStorage.getItem('username');
-        const savedEmail = localStorage.getItem('email');
-        
-        // 履歴があれば自動で入室させる
-        if(savedName && savedEmail) {
-            showChat();
-        }
+    let socket = null;
+    const messagesDiv = document.getElementById("messages");
+    const messageInput = document.getElementById("messageInput");
+
+    let myName = "";
+    let myEmail = "";
+    let myRoom = "";
+
+    // 🚀 アプリ起動時に、スマホから過去のルーム履歴を読み込んで表示する
+    window.onload = function() {
+        displayRoomHistory();
     };
 
-    function enterChat() {
-        const name = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
-        if(!name || !email) { alert("入力してね！"); return; }
+    // 🕒 履歴を画面に丸いタグとして表示する処理
+    function displayRoomHistory() {
+        const historyContainer = document.getElementById("roomHistory");
+        const savedRooms = JSON.parse(localStorage.getItem("yoshichat_rooms")) || [];
 
-        // 入力を記憶
-        localStorage.setItem('username', name);
-        localStorage.setItem('email', email);
-        showChat();
+        if (savedRooms.length === 0) {
+            historyContainer.innerHTML = '<span style="font-size:12px; color:#999;">履歴がありません</span>';
+            return;
+        }
+
+        historyContainer.innerHTML = "";
+        savedRooms.forEach(room => {
+            const tag = document.createElement("span");
+            tag.className = "history-tag";
+            tag.innerText = room;
+            // タグをポチッと押したら、ルーム入力欄に自動で文字が入る！
+            tag.onclick = function() {
+                document.getElementById("roomInput").value = room;
+            };
+            historyContainer.appendChild(tag);
+        });
     }
 
-    function showChat() {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('chatScreen').style.display = 'block';
+    // 💾 新しいルームを履歴（localStorage）に保存する処理
+    function saveRoomToHistory(roomName) {
+        let savedRooms = JSON.parse(localStorage.getItem("yoshichat_rooms")) || [];
+
+        // 重複を消して、最新の部屋が先頭にくるようにする
+        savedRooms = savedRooms.filter(r => r !== roomName);
+        savedRooms.unshift(roomName);
+
+        // 履歴は最大5件までキープ
+        if (savedRooms.length > 5) savedRooms.pop();
+
+        localStorage.setItem("yoshichat_rooms", JSON.stringify(savedRooms));
     }
 
-    function send() {
-        const text = document.getElementById('msgInput').value;
-        const name = localStorage.getItem('username');
-        
-        // サーバーへ送信（nameとtextをセット）
-        console.log("送信:", { name, text }); 
+    // 🚪 ルームに入るボタンを押したときの処理
+    async function joinChat() {
+        const nameInput = document.getElementById("usernameInput").value.trim();
+        const emailInput = document.getElementById("emailInput").value.trim();
+        const roomInput = document.getElementById("roomInput").value.trim();
 
-        document.getElementById('chatBox').innerHTML += `<div><strong>${name}</strong>: ${text}</div>`;
-        document.getElementById('msgInput').value = '';
+        if (nameInput === "" || emailInput === "" || roomInput === "") {
+            alert("すべての項目を入力してください！");
+            return;
+        }
+
+        myName = nameInput;
+        myEmail = emailInput;
+        myRoom = roomInput;
+
+        // 💾 ルーム名をスマホに保存！
+        saveRoomToHistory(myRoom);
+
+        // 📱 サーバーのアカウント登録API（/register）を叩く
+        try {
+            await fetch("https://yoshichat-server.yoopy2014.workers.dev/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: myEmail, name: myName })
+            });
+        } catch (e) {
+            console.error("アカウント登録エラー:", e);
+        }
+
+        // 画面表示の切り替え
+        document.getElementById("room-title").innerText = `ルーム: ${myRoom}`;
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("chat-screen").style.display = "flex";
+        messagesDiv.innerHTML = "";
+
+        // 🌐 サーバーURLの末尾に「?room=部屋名」をつけて接続
+        const encodedRoom = encodeURIComponent(myRoom);
+        socket = new WebSocket(`wss://yoshichat-server.yoopy2014.workers.dev/?room=${encodedRoom}`);
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            displayMessage(data.senderName, data.message, data.senderEmail);
+        };
+
+        socket.onopen = () => {
+            console.log(`${myRoom} ルームに接続完了！（過去ログ自動受信中）`);
+        };
+    }
+
+    // 🏃‍♂️ 退出ボタンの処理
+    function leaveChat() {
+        if (confirm("このルームから退出しますか？")) {
+            if (socket) {
+                socket.close();
+            }
+            document.getElementById("chat-screen").style.display = "none";
+            document.getElementById("login-screen").style.display = "flex";
+
+            document.getElementById("usernameInput").value = "";
+            document.getElementById("emailInput").value = "";
+            document.getElementById("roomInput").value = "";
+            messagesDiv.innerHTML = "";
+
+            // ログイン画面に戻ったとき、最新の履歴リストを再描画する
+            displayRoomHistory();
+        }
+    }
+
+    // メッセージを画面に表示する処理
+    function displayMessage(senderName, message, senderEmail) {
+        if (!message) return;
+
+        const isMe = (senderEmail === myEmail);
+        let msgClass = isMe ? "msg-me" : "";
+        let badgeHtml = "";
+
+        if (senderEmail === "yoopy2014@gmail.com") {
+            badgeHtml = '<span class="dev-badge">🔧開発者</span>';
+        }
+
+        const displayName = isMe ? "自分" : (senderName || "名無しさん");
+
+        messagesDiv.innerHTML += `
+            <div class="msg-line ${msgClass}">
+                <span class="msg-name">${displayName}${badgeHtml}</span>
+                <span class="msg-text">${message}</span>
+            </div>
+        `;
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // メッセージを送信する処理
+    function sendMessage() {
+        const text = messageInput.value.trim();
+        if (text === "" || !socket) return;
+
+        const messageData = {
+            email: myEmail,
+            message: text
+        };
+
+        socket.send(JSON.stringify(messageData));
+        messageInput.value = "";
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
     }
 </script>
 </body>
